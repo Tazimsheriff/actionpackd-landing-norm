@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <filter id="red-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <linearGradient id="headband-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1A1A" />
+      <stop offset="100%" stop-color="#C00000" />
+    </linearGradient>
+  </defs>
+
+  <!-- Mascot Graphic Group -->
+  <g transform="translate(10, 5) scale(0.95)">
+    <!-- Red Headband Tails (Flowing left) -->
+    <path d="M 28 36 C 12 30 6 22 2 24 C 0 25 5 32 16 35 C 22 37 25 39 28 40 Z" fill="url(#headband-grad)" filter="url(#red-glow)" />
+    <path d="M 28 38 C 12 42 6 48 1 50 C 0 52 7 51 18 46 C 22 43 25 42 28 41 Z" fill="#990000" />
+
+    <!-- Back Leg & Shoe -->
+    <path d="M 46 72 L 32 85 L 24 80 L 38 68 Z" fill="#141414" stroke="#262626" stroke-width="1.5" />
+    <path d="M 23 79 L 17 85 C 14 88 19 93 24 90 L 30 84 Z" fill="#F20000" />
+    <path d="M 18 87 L 26 89" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Front Leg & Shoe -->
+    <path d="M 60 72 L 76 85 L 85 78 L 68 65 Z" fill="#1A1A1A" stroke="#333333" stroke-width="1.5" />
+    <path d="M 76 83 L 87 92 C 92 94 96 89 91 83 L 83 77 Z" fill="#F20000" />
+    <path d="M 85 91 L 93 86" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Body / Black Hoodie -->
+    <path d="M 38 48 C 38 48 52 44 64 48 C 70 51 74 60 70 73 C 64 77 48 77 41 73 C 36 62 38 48 38 48 Z" fill="#121212" stroke="#333333" stroke-width="2" />
+    <path d="M 48 50 C 53 55 58 55 63 50" stroke="#383838" stroke-width="2.5" stroke-linecap="round" fill="none" />
+
+    <!-- Left Arm -->
+    <path d="M 40 52 L 28 62 L 33 67 L 43 57 Z" fill="#1A1A1A" />
+    <circle cx="27" cy="64" r="4" fill="#FFCBB3" />
+
+    <!-- Right Arm / Thumbs Up -->
+    <path d="M 64 52 L 79 45 L 84 51 L 69 58 Z" fill="#222222" />
+    <!-- Hand & Thumbs Up -->
+    <path d="M 79 43 C 79 37 83 34 85 36 C 87 38 85 43 85 45 L 89 45 C 92 45 93 47 91 49 L 87 51 C 89 53 88 55 86 56 L 80 54 Z" fill="#FFCBB3" stroke="#E6B198" stroke-width="0.5" />
+
+    <!-- Head & Skin -->
+    <circle cx="56" cy="35" r="15" fill="#FFCBB3" />
+
+    <!-- Hair -->
+    <path d="M 38 32 C 36 20 45 13 54 13 C 63 11 74 16 76 27 C 73 20 67 18 58 18 C 49 18 40 23 38 32 Z" fill="#0A0A0A" />
+    <path d="M 42 21 L 37 12 L 48 17 L 55 8 L 62 17 L 73 10 L 71 22 Z" fill="#141414" />
+
+    <!-- Red Headband -->
+    <path d="M 39 28 C 48 26 63 26 73 30 L 72 36 C 63 32 48 32 40 34 Z" fill="url(#headband-grad)" />
+
+    <!-- Eyes & Smile -->
+    <ellipse cx="63" cy="35" rx="2.8" ry="4" fill="#0A0A0A" />
+    <ellipse cx="64" cy="34" rx="1.2" ry="1.2" fill="#FFFFFF" />
+    <ellipse cx="50" cy="36" rx="2.3" ry="3.5" fill="#0A0A0A" />
+    <ellipse cx="51" cy="35" rx="1" ry="1" fill="#FFFFFF" />
+    <path d="M 53 42 C 57 46 62 45 64 41" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" fill="none" />
+  </g>
+
+  <!-- Typography Text "actionpackd" -->
+  <text x="110" y="72" font-family="'Inter', 'Arial Black', sans-serif" font-weight="900" font-size="44" fill="#FFFFFF" letter-spacing="-2">actionpackd</text>
+</svg>

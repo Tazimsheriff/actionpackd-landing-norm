@@ -1,0 +1,1454 @@
+<!doctype html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Actionpackd — Autonomous AI Agent Infrastructure</title>
+    <meta name="description" content="Build, customize, and deploy AI agents with sub-100ms tool calling across WhatsApp, Voice, Email, and Web." />
+    
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                red: '#F20000',
+                f1Red: '#E10600',
+                gold: '#FFB800',
+                cyan: '#00E5FF',
+                purpleSector: '#D946EF',
+                black: '#080808',
+                surface: '#0E0E0E',
+                card: '#121212',
+                cardHover: '#181818',
+                border: '#222222',
+                borderLight: '#2E2E2E',
+                muted: '#8E8E93',
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            boxShadow: {
+              'red-glow': '0 0 25px rgba(242, 0, 0, 0.35)',
+              'gold-glow': '0 0 25px rgba(255, 184, 0, 0.35)',
+              'f1-glow': '0 0 35px rgba(225, 6, 0, 0.4)',
+              'terminal': '0 20px 50px rgba(0, 0, 0, 0.8)',
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      html {
+        background-color: #080808;
+        color: #FFFFFF;
+        font-family: 'Inter', sans-serif;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #080808;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #222222;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #F20000;
+      }
+
+      .bg-grid-pattern {
+        background-size: 48px 48px;
+        background-image: 
+          linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      }
+
+      .bg-carbon {
+        background-color: #0B0E14;
+        background-image: 
+          linear-gradient(45deg, #11151F 25%, transparent 25%), 
+          linear-gradient(-45deg, #11151F 25%, transparent 25%), 
+          linear-gradient(45deg, transparent 75%, #11151F 75%), 
+          linear-gradient(-45deg, transparent 75%, #11151F 75%);
+        background-size: 16px 16px;
+        background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+      }
+
+      .bg-racing-stripes {
+        background: repeating-linear-gradient(
+          -45deg,
+          rgba(242, 0, 0, 0.08),
+          rgba(242, 0, 0, 0.08) 10px,
+          transparent 10px,
+          transparent 20px
+        );
+      }
+
+      .bg-radial-glow {
+        background: radial-gradient(circle at 50% 15%, rgba(242, 0, 0, 0.18) 0%, rgba(8, 8, 8, 0) 75%);
+      }
+
+      @keyframes pulseGlow {
+        0%, 100% { opacity: 0.35; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.05); }
+      }
+      .animate-pulse-glow {
+        animation: pulseGlow 4s infinite ease-in-out;
+      }
+
+      @keyframes cursorBlink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+      .animate-cursor {
+        animation: cursorBlink 1s infinite;
+      }
+
+      .terminal-scroll {
+        font-family: 'JetBrains Mono', monospace;
+      }
+    </style>
+  </head>
+  <body class="bg-[#080808] text-white selection:bg-[#F20000] selection:text-white antialiased">
+
+    <!-- Top Release Banner -->
+    <div class="bg-gradient-to-r from-[#120000] via-[#2A0000] to-[#120000] border-b border-[#F20000]/40 py-2 px-4 text-center text-xs font-mono relative z-50">
+      <div class="max-w-7xl mx-auto flex items-center justify-center gap-3 flex-wrap">
+        <span class="inline-flex items-center gap-1.5 bg-[#FFB800]/15 border border-[#FFB800]/50 text-[#FFB800] px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#FFB800] animate-ping"></span>
+          🏎️ POLE POSITION SHIPPING
+        </span>
+        <span class="text-zinc-200">
+          Sub-100ms Tool Execution • 1.8s Pit-Stop Agent Deploy
+        </span>
+        <a href="#speed-telemetry" class="text-white hover:text-[#FFB800] font-bold underline underline-offset-2 transition-colors flex items-center gap-1">
+          F1 Telemetry &rarr;
+        </a>
+      </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-[#080808]/85 backdrop-blur-md border-b border-[#222222]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+        
+        <!-- Brand Logo -->
+        <a href="#" class="flex items-center gap-3 group">
+          <img src="/logo.svg" alt="actionpackd logo" class="h-9 sm:h-11 w-auto object-contain group-hover:scale-105 transition-transform filter drop-shadow-[0_0_12px_rgba(242,0,0,0.35)]" />
+        </a>
+
+        <!-- Navigation Links -->
+        <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-zinc-400">
+          <a href="#features" class="hover:text-white transition-colors">Features</a>
+          <a href="#speed-telemetry" class="text-[#FFB800] hover:text-white transition-colors font-bold flex items-center gap-1">
+            <span>⚡ F1 Speed</span>
+          </a>
+          <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
+          <a href="#benchmarks" class="hover:text-white transition-colors">Benchmarks</a>
+          <a href="#use-cases" class="hover:text-white transition-colors font-mono text-xs bg-zinc-900 px-2 py-1 rounded border border-zinc-800">Playground</a>
+          <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+          <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+        </nav>
+
+        <!-- CTAs -->
+        <div class="flex items-center gap-3">
+          <button onclick="copyInstallCmd('pip install actionpackd')" class="hidden lg:flex items-center gap-2 bg-[#121212] border border-[#262626] hover:border-[#F20000]/60 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-300 transition-all group">
+            <span class="text-[#F20000] font-bold">$</span>
+            <span>pip install actionpackd</span>
+            <svg class="w-3.5 h-3.5 text-zinc-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+          </button>
+
+          <button onclick="openModal('loginModal')" class="text-xs sm:text-sm font-semibold text-zinc-300 hover:text-white px-3 py-2 transition-colors">
+            Sign In
+          </button>
+          
+          <button onclick="openModal('signupModal')" class="bg-[#F20000] hover:bg-[#FF1A1A] text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-lg shadow-[0_0_20px_rgba(242,0,0,0.4)] transition-all transform hover:scale-[1.02] active:scale-[0.98]">
+            Console &rarr;
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-12 pb-20 lg:pt-20 lg:pb-28 overflow-hidden bg-grid-pattern bg-radial-glow">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#F20000]/10 blur-[130px] pointer-events-none rounded-full animate-pulse-glow"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 bg-[#121212] border border-[#2E2E2E] hover:border-[#FFB800]/50 rounded-full px-4 py-1.5 mb-6 transition-colors shadow-lg">
+          <span class="w-2 h-2 rounded-full bg-[#FFB800] animate-ping"></span>
+          <span class="text-xs font-mono text-zinc-200 uppercase tracking-widest font-semibold">
+            🏎️ MAX SPEED MODE: SUB-100MS LATENCY
+          </span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-4xl mx-auto leading-[1.1]">
+          Agent Infrastructure for <span class="bg-gradient-to-r from-[#F20000] via-[#FFB800] to-white bg-clip-text text-transparent">Pole Position Shipping</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="mt-5 text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+          Deploy AI agents with sub-100ms tool execution across WhatsApp, Voice, Email, and Web — faster than a 1.8s pit stop.
+        </p>
+
+        <!-- Command Quickstart Bar -->
+        <div id="quickstart" class="mt-8 max-w-2xl mx-auto bg-[#121212] border border-[#222222] hover:border-[#F20000]/40 rounded-xl p-2 sm:p-3 shadow-2xl transition-all">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-2 mb-2 px-2 text-xs font-mono text-zinc-400 overflow-x-auto">
+            <div class="flex items-center gap-4">
+              <button onclick="setCliTab('pip')" id="tab-pip" class="cli-tab text-white font-bold border-b-2 border-[#F20000] pb-1">Python CLI</button>
+              <button onclick="setCliTab('curl')" id="tab-curl" class="cli-tab hover:text-white pb-1">cURL API</button>
+              <button onclick="setCliTab('ts')" id="tab-ts" class="cli-tab hover:text-white pb-1">TypeScript SDK</button>
+              <button onclick="setCliTab('docker')" id="tab-docker" class="cli-tab hover:text-white pb-1">Docker</button>
+            </div>
+            <span class="hidden sm:inline text-zinc-600">v2.5.0</span>
+          </div>
+
+          <div class="flex items-center justify-between gap-3 px-3 py-2 bg-[#0A0A0A] rounded-lg border border-zinc-900 font-mono text-xs sm:text-sm">
+            <span id="cli-cmd-display" class="text-zinc-200 select-all overflow-x-auto whitespace-nowrap">
+              <span class="text-[#F20000]">$</span> pip install actionpackd && actionpackd init --channel whatsapp
+            </span>
+            <button onclick="copyCurrentCliCmd()" class="bg-[#1A1A1A] hover:bg-[#F20000] text-zinc-300 hover:text-white px-3 py-1.5 rounded text-xs font-sans font-semibold transition-all shrink-0 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+              </svg>
+              <span id="copy-btn-label">Copy</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="mt-8 flex items-center justify-center gap-4 flex-wrap">
+          <button onclick="openModal('signupModal')" class="bg-[#F20000] hover:bg-[#FF1A1A] text-white font-bold text-sm sm:text-base px-7 py-3.5 rounded-xl shadow-red-glow transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2">
+            <span>Start Free</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+          
+          <a href="#speed-telemetry" class="bg-[#121212] hover:bg-[#1A1A1A] text-[#FFB800] border border-[#FFB800]/40 font-semibold text-sm sm:text-base px-6 py-3.5 rounded-xl transition-all flex items-center gap-2">
+            <span>⚡ Telemetry Mode</span>
+            <span class="w-2 h-2 rounded-full bg-[#FFB800]"></span>
+          </a>
+        </div>
+
+        <!-- INTERACTIVE TERMINAL -->
+        <div class="mt-14 max-w-4xl mx-auto text-left rounded-2xl bg-[#0A0A0A] border border-[#262626] shadow-terminal overflow-hidden relative">
+          <!-- Terminal Header -->
+          <div class="bg-[#121212] border-b border-[#222222] px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+              <span class="ml-2 font-mono text-xs text-zinc-400 flex items-center gap-2">
+                <span class="text-[#F20000]">actionpackd-daemon</span> — node_id: ap-us-east-4920
+              </span>
+            </div>
+
+            <!-- Channel Tabs -->
+            <div class="hidden sm:flex items-center gap-1 bg-[#080808] p-1 rounded-lg border border-zinc-800 text-[11px] font-mono">
+              <button onclick="switchTerminalChannel('whatsapp')" id="term-tab-whatsapp" class="term-chan-btn px-2.5 py-1 rounded bg-[#F20000] text-white font-bold">
+                WhatsApp
+              </button>
+              <button onclick="switchTerminalChannel('voice')" id="term-tab-voice" class="term-chan-btn px-2.5 py-1 rounded text-zinc-400 hover:text-white">
+                Voice (Twilio)
+              </button>
+              <button onclick="switchTerminalChannel('rag')" id="term-tab-rag" class="term-chan-btn px-2.5 py-1 rounded text-zinc-400 hover:text-white">
+                RAG Tool Execution
+              </button>
+            </div>
+          </div>
+
+          <!-- Terminal Content -->
+          <div class="p-4 font-mono text-xs sm:text-sm text-zinc-300 leading-relaxed min-h-[260px] max-h-[380px] overflow-y-auto terminal-scroll bg-[#080808]">
+            <div id="terminal-stream-content" class="space-y-2">
+              <div class="text-zinc-500">[10:35:01.012] <span class="text-emerald-400">INIT</span> Actionpackd Engine loaded (Gemini 2.5 Flash + Tool Calling)</div>
+              <div class="text-zinc-500">[10:35:01.045] <span class="text-cyan-400">LISTEN</span> Webhook active on <span class="text-zinc-300">https://api.actionpackd.com/v1/wh/whatsapp</span></div>
+              <div class="text-zinc-500">[10:35:02.180] <span class="text-yellow-400">INCOMING</span> WhatsApp message from <span class="text-white">+1 (555) 019-2831</span></div>
+              
+              <div class="p-3 bg-[#121212] border-l-2 border-[#F20000] rounded my-2 text-zinc-200">
+                <span class="text-[#F20000] font-bold">USER MSG:</span> "Do you have the Actionpackd Red Headband Hoodie in Medium in stock?"
+              </div>
+
+              <div class="text-zinc-500">[10:35:02.210] <span class="text-purple-400">TOOL_CALL</span> shopify.search_inventory(sku="AP-HD-RED-M")</div>
+              <div class="text-zinc-500">[10:35:02.265] <span class="text-emerald-400">EXEC_OK</span> Stock: 14 units · Price: $68.00 · Latency: 55ms</div>
+              <div class="text-zinc-500">[10:35:02.310] <span class="text-purple-400">TOOL_CALL</span> stripe.create_checkout_session(payment_method="apple_pay", amount=6800)</div>
+              <div class="text-zinc-[#F20000]">[10:35:02.380] <span class="text-emerald-400">DISPATCH</span> WhatsApp payload delivered <span class="text-zinc-500">(TTFT: 198ms)</span></div>
+
+              <div class="p-3 bg-[#151f15] border-l-2 border-emerald-500 rounded my-2 text-emerald-200">
+                <span class="text-emerald-400 font-bold">AGENT RESPONSE:</span> "Yes! We have 14 units of Medium available for $68. Here is your checkout link: https://pay.actionpackd.com/chk_9842"
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 mt-4 pt-2 border-t border-zinc-900 text-zinc-400">
+              <span class="text-[#F20000] font-bold">actionpackd&gt;</span>
+              <span id="terminal-typing-text" class="text-zinc-200">ready for events...</span>
+              <span class="w-2 h-4 bg-[#F20000] animate-cursor inline-block"></span>
+            </div>
+          </div>
+
+          <!-- Terminal Footer -->
+          <div class="bg-[#121212] border-t border-[#222222] px-4 py-2 flex items-center justify-between flex-wrap gap-2 text-xs font-mono">
+            <div class="flex items-center gap-4 text-zinc-400">
+              <span>Latency: <strong class="text-emerald-400">42ms</strong></span>
+              <span>Tool Calls: <strong class="text-white">2/2 Success</strong></span>
+              <span>Channel: <strong class="text-white">WhatsApp Business API</strong></span>
+            </div>
+            <button onclick="triggerTerminalSimulation()" class="bg-[#222222] hover:bg-[#F20000] text-zinc-200 hover:text-white px-3 py-1 rounded transition-colors text-[11px]">
+              ⚡ Live Simulation
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- METRICS STRIP -->
+    <section class="border-y border-[#222222] bg-[#0A0A0A] py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center font-mono">
+          <div class="p-3 border-r border-[#222222] last:border-r-0">
+            <div class="text-2xl sm:text-3xl font-black text-white">&lt; 85ms</div>
+            <div class="text-xs text-zinc-500 uppercase tracking-widest mt-1">Average Tool Execution</div>
+          </div>
+          <div class="p-3 border-r border-[#222222] last:border-r-0">
+            <div class="text-2xl sm:text-3xl font-black text-[#FFB800]">1.8s</div>
+            <div class="text-xs text-zinc-500 uppercase tracking-widest mt-1">Pit-Stop Deploy Speed</div>
+          </div>
+          <div class="p-3 border-r border-[#222222] last:border-r-0">
+            <div class="text-2xl sm:text-3xl font-black text-[#F20000]">99.99%</div>
+            <div class="text-xs text-zinc-500 uppercase tracking-widest mt-1">Uptime SLA</div>
+          </div>
+          <div class="p-3">
+            <div class="text-2xl sm:text-3xl font-black text-white">335+ KM/H</div>
+            <div class="text-xs text-zinc-500 uppercase tracking-widest mt-1">RPC Velocity</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- F1 SPEED & TELEMETRY SECTION (MAX VERSTAPPEN MODE) -->
+    <section id="speed-telemetry" class="py-20 bg-carbon border-b border-[#222222] relative overflow-hidden">
+      <div class="absolute inset-0 bg-racing-stripes pointer-events-none opacity-40"></div>
+      
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+          
+          <div class="lg:w-1/2">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 bg-[#121212] border border-[#FFB800]/40 px-3 py-1 rounded-full mb-4">
+              <span class="w-2 h-2 rounded-full bg-[#FFB800] animate-ping"></span>
+              <span class="font-mono text-xs font-bold text-[#FFB800] uppercase tracking-widest">
+                MAX VERSTAPPEN SPEED MODE
+              </span>
+            </div>
+
+            <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+              Built to Ship at <span class="text-[#FFB800]">Pole Position</span> Speed
+            </h2>
+
+            <p class="mt-4 text-zinc-300 text-sm sm:text-base leading-relaxed">
+              In Formula 1, pit stops take 1.80 seconds. Actionpackd deploys autonomous agents with sub-100ms tool calling and zero lag. <strong class="text-white font-semibold">"Simply Lovely."</strong>
+            </p>
+
+            <!-- Telemetry Sector Lights -->
+            <div class="mt-6 bg-[#080808] border border-zinc-800 p-4 rounded-xl font-mono text-xs space-y-3">
+              <div class="text-zinc-400 uppercase tracking-wider text-[11px] mb-1 flex items-center justify-between">
+                <span>Race Telemetry Sectors</span>
+                <span class="text-[#D946EF] font-bold">FULL PURPLE LAP (FASTEST)</span>
+              </div>
+              
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="bg-[#D946EF]/15 border border-[#D946EF] p-2 rounded-lg">
+                  <div class="text-[#D946EF] font-black text-xs">SECTOR 1</div>
+                  <div class="text-white font-bold text-sm">18.2ms</div>
+                  <div class="text-[10px] text-zinc-400">Ingress Parsing</div>
+                </div>
+                <div class="bg-[#D946EF]/15 border border-[#D946EF] p-2 rounded-lg">
+                  <div class="text-[#D946EF] font-black text-xs">SECTOR 2</div>
+                  <div class="text-white font-bold text-sm">42.1ms</div>
+                  <div class="text-[10px] text-zinc-400">Tool Call RPC</div>
+                </div>
+                <div class="bg-[#D946EF]/15 border border-[#D946EF] p-2 rounded-lg">
+                  <div class="text-[#D946EF] font-black text-xs">SECTOR 3</div>
+                  <div class="text-white font-bold text-sm">12.5ms</div>
+                  <div class="text-[10px] text-zinc-400">Egress Dispatch</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Features -->
+            <div class="mt-6 space-y-3 font-sans text-xs sm:text-sm">
+              <div class="flex items-center gap-3 text-zinc-200">
+                <span class="w-5 h-5 rounded bg-[#F20000] text-white flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                <span><strong>0 to 100ms Reaction Time:</strong> Instantaneous function invocation with zero cold starts.</span>
+              </div>
+              <div class="flex items-center gap-3 text-zinc-200">
+                <span class="w-5 h-5 rounded bg-[#FFB800] text-black flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                <span><strong>Pit-Stop Agent Deploy:</strong> Launch live multi-channel bots in under 2 seconds.</span>
+              </div>
+              <div class="flex items-center gap-3 text-zinc-200">
+                <span class="w-5 h-5 rounded bg-emerald-500 text-white flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                <span><strong>DRS Overtake Mode:</strong> High-burst throughput for massive holiday traffic spikes.</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Live Speed Telemetry Dashboard Box -->
+          <div class="lg:w-1/2 w-full bg-[#080808] border-2 border-[#FFB800]/60 rounded-2xl p-6 shadow-f1-glow relative">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4 font-mono text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">🏎️</span>
+                <span class="text-white font-bold">RB-20 TELEMETRY ENGINE</span>
+              </div>
+              <span class="bg-[#FFB800] text-black px-2 py-0.5 rounded font-black text-[10px]">#1 POLE POSITION</span>
+            </div>
+
+            <!-- Tachometer / Speedometer Visual -->
+            <div class="space-y-4 font-mono text-xs">
+              <div>
+                <div class="flex justify-between text-zinc-400 text-[11px] mb-1">
+                  <span>RPM Velocity (Gear 8 / 335 KM/H)</span>
+                  <span id="f1-rpm-text" class="text-[#FFB800] font-bold">12,400 RPM</span>
+                </div>
+                <div class="w-full bg-zinc-900 h-3 rounded-full overflow-hidden p-0.5 border border-zinc-800">
+                  <div id="f1-rpm-bar" class="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-[#F20000] rounded-full transition-all duration-300" style="width: 88%;"></div>
+                </div>
+              </div>
+
+              <!-- Metrics -->
+              <div class="grid grid-cols-2 gap-3 bg-[#0D0D0D] p-3 rounded-xl border border-zinc-900">
+                <div>
+                  <div class="text-zinc-500 text-[10px]">CURRENT LAP DELTA</div>
+                  <div id="f1-delta-time" class="text-emerald-400 font-extrabold text-lg">-0.842s (P1)</div>
+                </div>
+                <div>
+                  <div class="text-zinc-500 text-[10px]">PIT STOP TIME</div>
+                  <div class="text-[#FFB800] font-extrabold text-lg">1.82s Deploy</div>
+                </div>
+              </div>
+
+              <!-- DRS Action Button -->
+              <div class="pt-2">
+                <button onclick="triggerDrsOvertake()" class="w-full bg-gradient-to-r from-[#F20000] via-[#FFB800] to-[#F20000] text-white font-black py-3 rounded-xl shadow-lg hover:opacity-95 transition-all text-sm font-sans flex items-center justify-center gap-2 uppercase tracking-wider">
+                  <span>⚡ Activate DRS Overtake Mode</span>
+                </button>
+              </div>
+
+              <div id="drs-status-msg" class="text-center text-[11px] text-zinc-400 italic">
+                Click to initiate sub-50ms tool execution boost.
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="py-20 bg-[#080808] relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <div class="font-mono text-xs text-[#F20000] uppercase tracking-widest mb-2">FEATURES</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            Engineered for Autonomous Agents
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <!-- Pillar 1 -->
+          <div class="bg-[#0E0E0E] border border-[#222222] hover:border-[#F20000]/60 p-6 rounded-2xl transition-all group">
+            <div class="flex items-center justify-between mb-4">
+              <span class="font-mono text-xs text-[#F20000] bg-[#F20000]/10 px-2 py-0.5 rounded border border-[#F20000]/30 font-bold">#01 TOOLING</span>
+              <span class="text-xs font-mono text-zinc-500">&lt;50ms RPC</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#F20000] transition-colors">
+              Zero-Latency Tool Calling
+            </h3>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+              Auto-discovers schemas, validates JSON, and executes database RPCs in milliseconds.
+            </p>
+            <div class="bg-[#080808] p-2.5 rounded-lg border border-zinc-900 font-mono text-xs text-zinc-400">
+              <code>actionpackd.tool.bind("shopify")</code>
+            </div>
+          </div>
+
+          <!-- Pillar 2 -->
+          <div class="bg-[#0E0E0E] border border-[#222222] hover:border-[#F20000]/60 p-6 rounded-2xl transition-all group">
+            <div class="flex items-center justify-between mb-4">
+              <span class="font-mono text-xs text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">#02 CHANNELS</span>
+              <span class="text-xs font-mono text-zinc-500">Native Hooks</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#F20000] transition-colors">
+              Multi-Channel Orchestration
+            </h3>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+              Unified state engine backing WhatsApp, Twilio Voice, SendGrid, and Web Chat.
+            </p>
+            <div class="bg-[#080808] p-2.5 rounded-lg border border-zinc-900 font-mono text-xs text-zinc-400">
+              <code>agent.listen(["whatsapp", "voice"])</code>
+            </div>
+          </div>
+
+          <!-- Pillar 3 -->
+          <div class="bg-[#0E0E0E] border border-[#222222] hover:border-[#F20000]/60 p-6 rounded-2xl transition-all group">
+            <div class="flex items-center justify-between mb-4">
+              <span class="font-mono text-xs text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/30 font-bold">#03 MEMORY</span>
+              <span class="text-xs font-mono text-zinc-500">Hybrid Vector</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#F20000] transition-colors">
+              Stateful RAG & Memory
+            </h3>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+              Combines key-value states with hybrid vector search for instant long-term recall.
+            </p>
+            <div class="bg-[#080808] p-2.5 rounded-lg border border-zinc-900 font-mono text-xs text-zinc-400">
+              <code>memory.recall(user_id)</code>
+            </div>
+          </div>
+
+          <!-- Pillar 4 -->
+          <div class="bg-[#0E0E0E] border border-[#222222] hover:border-[#F20000]/60 p-6 rounded-2xl transition-all group">
+            <div class="flex items-center justify-between mb-4">
+              <span class="font-mono text-xs text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30 font-bold">#04 SAFETY</span>
+              <span class="text-xs font-mono text-zinc-500">Guardrails</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#F20000] transition-colors">
+              Deterministic Guardrails
+            </h3>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+              Enforces JSON schemas and hands off chats seamlessly to human support teams.
+            </p>
+            <div class="bg-[#080808] p-2.5 rounded-lg border border-zinc-900 font-mono text-xs text-zinc-400">
+              <code>guardrails.enforce(schema)</code>
+            </div>
+          </div>
+
+          <!-- Pillar 5 -->
+          <div class="bg-[#0E0E0E] border border-[#222222] hover:border-[#F20000]/60 p-6 rounded-2xl transition-all group">
+            <div class="flex items-center justify-between mb-4">
+              <span class="font-mono text-xs text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/30 font-bold">#05 ASYNC</span>
+              <span class="text-xs font-mono text-zinc-500">Task Queue</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#F20000] transition-colors">
+              Background Campaigns
+            </h3>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+              Schedule automated follow-ups and drip messaging with rate-limited dispatching.
+            </p>
+            <div class="bg-[#080808] p-2.5 rounded-lg border border-zinc-900 font-mono text-xs text-zinc-400">
+              <code>queue.dispatch_drip()</code>
+            </div>
+          </div>
+
+          <!-- Pillar 6 -->
+          <div class="bg-[#0E0E0E] border border-[#222222] hover:border-[#F20000]/60 p-6 rounded-2xl transition-all group">
+            <div class="flex items-center justify-between mb-4">
+              <span class="font-mono text-xs text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30 font-bold">#06 FALLBACKS</span>
+              <span class="text-xs font-mono text-zinc-500">Self-Healing</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-[#F20000] transition-colors">
+              Automatic Model Fallbacks
+            </h3>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-4">
+              Zero-downtime routing between Gemini, Claude, and GPT-4o on API rate limits.
+            </p>
+            <div class="bg-[#080808] p-2.5 rounded-lg border border-zinc-900 font-mono text-xs text-zinc-400">
+              <code>agent.cascade(["gemini", "claude"])</code>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE FLOW -->
+    <section id="architecture" class="py-18 bg-[#0A0A0A] border-t border-[#222222]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-10">
+          
+          <div class="lg:w-1/2">
+            <div class="font-mono text-xs text-[#F20000] uppercase tracking-widest mb-2">AGENT PIPELINE</div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              Inbound Event to Action in &lt;100ms
+            </h2>
+            <p class="mt-3 text-zinc-400 text-sm leading-relaxed">
+              Decoupled execution pipeline with real-time memory and sub-100ms tool calling.
+            </p>
+
+            <div class="mt-6 space-y-2.5 font-mono text-xs">
+              <div onclick="selectArchNode('input')" id="arch-node-input" class="arch-node-item p-3.5 rounded-xl border border-[#F20000] bg-[#121212] cursor-pointer transition-all flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="w-5 h-5 rounded bg-[#F20000] text-white flex items-center justify-center font-bold text-[11px]">1</span>
+                  <div>
+                    <div class="font-bold text-white text-xs sm:text-sm font-sans">1. Multi-Channel Ingress</div>
+                    <div class="text-zinc-400 text-[11px]">WhatsApp Webhook / Twilio Voice Stream</div>
+                  </div>
+                </div>
+                <span class="text-[#F20000] font-bold">&rarr;</span>
+              </div>
+
+              <div onclick="selectArchNode('rag')" id="arch-node-rag" class="arch-node-item p-3.5 rounded-xl border border-[#222222] hover:border-zinc-700 bg-[#0E0E0E] cursor-pointer transition-all flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="w-5 h-5 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-[11px]">2</span>
+                  <div>
+                    <div class="font-bold text-white text-xs sm:text-sm font-sans">2. Context & Vector Memory</div>
+                    <div class="text-zinc-400 text-[11px]">Hybrid Search + State Recall (20ms)</div>
+                  </div>
+                </div>
+                <span class="text-zinc-600 font-bold">&rarr;</span>
+              </div>
+
+              <div onclick="selectArchNode('tool')" id="arch-node-tool" class="arch-node-item p-3.5 rounded-xl border border-[#222222] hover:border-zinc-700 bg-[#0E0E0E] cursor-pointer transition-all flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="w-5 h-5 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-[11px]">3</span>
+                  <div>
+                    <div class="font-bold text-white text-xs sm:text-sm font-sans">3. Tool Calling Matrix</div>
+                    <div class="text-zinc-400 text-[11px]">Database Queries, Payments, Calendar RPCs</div>
+                  </div>
+                </div>
+                <span class="text-zinc-600 font-bold">&rarr;</span>
+              </div>
+
+              <div onclick="selectArchNode('dispatch')" id="arch-node-dispatch" class="arch-node-item p-3.5 rounded-xl border border-[#222222] hover:border-zinc-700 bg-[#0E0E0E] cursor-pointer transition-all flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="w-5 h-5 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-[11px]">4</span>
+                  <div>
+                    <div class="font-bold text-white text-xs sm:text-sm font-sans">4. High-Speed Egress Dispatch</div>
+                    <div class="text-zinc-400 text-[11px]">WhatsApp Push / Voice Audio Output</div>
+                  </div>
+                </div>
+                <span class="text-zinc-600 font-bold">&rarr;</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Preview -->
+          <div class="lg:w-1/2 w-full bg-[#080808] border border-[#262626] rounded-2xl p-5 font-mono text-xs shadow-2xl relative">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-2.5 mb-3 text-zinc-400">
+              <span class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#F20000]"></span>
+                <span id="arch-node-title" class="text-white font-bold">Payload Schema: Ingress Event</span>
+              </span>
+              <span class="text-[10px] text-zinc-500">JSON SPEC V2</span>
+            </div>
+
+            <pre id="arch-code-preview" class="text-zinc-300 bg-[#0D0D0D] p-3.5 rounded-xl border border-zinc-900 overflow-x-auto text-xs leading-relaxed max-h-[300px]">
+{
+  "event_id": "evt_98412a80f",
+  "timestamp": "2026-07-25T10:35:02.180Z",
+  "channel": "whatsapp_business_api",
+  "sender": {
+    "phone": "+15550192831",
+    "name": "Alex Mercer"
+  },
+  "message": {
+    "body": "Do you have the Actionpackd Red Headband Hoodie in Medium?"
+  }
+}</pre>
+
+            <div class="mt-3 pt-2.5 border-t border-zinc-900 flex items-center justify-between text-zinc-500 text-[11px]">
+              <span>Overhead: <strong class="text-emerald-400">12ms</strong></span>
+              <span>Security: <strong class="text-zinc-300">TLS 1.3 / AES-256</strong></span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BENCHMARKS -->
+    <section id="benchmarks" class="py-20 bg-[#080808] border-t border-[#222222]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="font-mono text-xs text-[#F20000] uppercase tracking-widest mb-2">BENCHMARKS</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            Performance Benchmarks
+          </h2>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left font-mono text-xs sm:text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-zinc-800 bg-[#0E0E0E] text-zinc-400">
+                <th class="p-3.5 font-semibold uppercase tracking-wider">Capability</th>
+                <th class="p-3.5 font-extrabold text-[#F20000] bg-[#1A0A0A] border-x border-[#F20000]/30">Actionpackd</th>
+                <th class="p-3.5 font-semibold text-zinc-400">Legacy Chatbots</th>
+                <th class="p-3.5 font-semibold text-zinc-400">DIY LangChain</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-900 text-zinc-300">
+              <tr>
+                <td class="p-3.5 font-sans font-bold text-white">Tool Calling TTFT</td>
+                <td class="p-3.5 bg-[#140808] border-x border-[#F20000]/20 font-bold text-emerald-400">&lt; 85 ms</td>
+                <td class="p-3.5 text-zinc-500">1,200 ms - 3,000 ms</td>
+                <td class="p-3.5 text-zinc-400">450 ms - 900 ms</td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-sans font-bold text-white">WhatsApp Direct Hook</td>
+                <td class="p-3.5 bg-[#140808] border-x border-[#F20000]/20 font-bold text-emerald-400">Native (1-Click)</td>
+                <td class="p-3.5 text-zinc-500">Zapier Webhook</td>
+                <td class="p-3.5 text-zinc-400">Custom Server</td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-sans font-bold text-white">Vector RAG Context</td>
+                <td class="p-3.5 bg-[#140808] border-x border-[#F20000]/20 font-bold text-emerald-400">Sub-30ms Hybrid</td>
+                <td class="p-3.5 text-zinc-500">Keyword Only</td>
+                <td class="p-3.5 text-zinc-400">Manual Vector DB</td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-sans font-bold text-white">JSON Schema Guardrails</td>
+                <td class="p-3.5 bg-[#140808] border-x border-[#F20000]/20 font-bold text-emerald-400">Built-In</td>
+                <td class="p-3.5 text-zinc-500">None</td>
+                <td class="p-3.5 text-zinc-400">Custom Wrappers</td>
+              </tr>
+              <tr>
+                <td class="p-3.5 font-sans font-bold text-white">Uptime Guarantee</td>
+                <td class="p-3.5 bg-[#140808] border-x border-[#F20000]/20 font-bold text-emerald-400">99.99% SLA</td>
+                <td class="p-3.5 text-zinc-500">99.0% Best Effort</td>
+                <td class="p-3.5 text-zinc-400">Self-Hosted Risk</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INTERACTIVE PLAYGROUND -->
+    <section id="use-cases" class="py-20 bg-[#0A0A0A] border-t border-[#222222]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="font-mono text-xs text-[#F20000] uppercase tracking-widest mb-2">PLAYGROUND</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            Interactive Agent Sandbox
+          </h2>
+
+          <!-- Tabs -->
+          <div class="mt-6 flex items-center justify-center gap-2 flex-wrap font-mono text-xs">
+            <button onclick="setPlaygroundIndustry('ecommerce')" id="ind-tab-ecommerce" class="ind-btn bg-[#F20000] text-white font-bold px-3.5 py-1.5 rounded-lg border border-[#F20000]">
+              E-Commerce
+            </button>
+            <button onclick="setPlaygroundIndustry('realestate')" id="ind-tab-realestate" class="ind-btn bg-[#121212] text-zinc-400 hover:text-white px-3.5 py-1.5 rounded-lg border border-zinc-800">
+              Real Estate
+            </button>
+            <button onclick="setPlaygroundIndustry('healthcare')" id="ind-tab-healthcare" class="ind-btn bg-[#121212] text-zinc-400 hover:text-white px-3.5 py-1.5 rounded-lg border border-zinc-800">
+              Healthcare
+            </button>
+            <button onclick="setPlaygroundIndustry('education')" id="ind-tab-education" class="ind-btn bg-[#121212] text-zinc-400 hover:text-white px-3.5 py-1.5 rounded-lg border border-zinc-800">
+              Education
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Window -->
+        <div class="max-w-2xl mx-auto bg-[#080808] border border-[#262626] rounded-2xl overflow-hidden shadow-2xl">
+          <div class="bg-[#121212] border-b border-[#222222] p-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-[#F20000]/20 border border-[#F20000]/40 flex items-center justify-center font-bold text-[#F20000] text-xs">
+                ⚡
+              </div>
+              <div>
+                <div id="demo-agent-name" class="font-bold text-white text-xs sm:text-sm">Actionpackd E-Commerce Agent</div>
+                <div class="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Active on WhatsApp & Web
+                </div>
+              </div>
+            </div>
+
+            <button onclick="resetDemoChat()" class="text-xs font-mono text-zinc-400 hover:text-white px-2.5 py-1 rounded bg-[#1A1A1A] border border-zinc-800 transition-colors">
+              ↻ Reset
+            </button>
+          </div>
+
+          <div id="demo-chat-body" class="p-5 space-y-3.5 min-h-[280px] max-h-[380px] overflow-y-auto text-xs sm:text-sm leading-relaxed">
+            <!-- Dynamically populated -->
+          </div>
+
+          <div class="p-2.5 bg-[#121212] border-t border-[#222222] flex items-center gap-2">
+            <input id="demo-user-input" type="text" placeholder="Type a message..." class="flex-1 bg-[#080808] border border-zinc-800 focus:border-[#F20000] text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm outline-none transition-colors" />
+            <button onclick="sendUserDemoMessage()" class="bg-[#F20000] hover:bg-[#FF1A1A] text-white font-bold px-4 py-2 rounded-xl transition-all shrink-0 text-xs sm:text-sm">
+              Send
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5-STEP WORKFLOW -->
+    <section class="py-20 bg-[#080808] border-t border-[#222222]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="font-mono text-xs text-[#F20000] uppercase tracking-widest mb-2">WORKFLOW</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            Deploy in 5 Steps
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3.5 font-mono text-xs">
+          
+          <div class="bg-[#0E0E0E] border border-[#222222] p-4 rounded-xl text-center hover:border-[#F20000]/50 transition-all">
+            <div class="w-7 h-7 rounded-full bg-[#F20000] text-white font-bold mx-auto mb-2.5 flex items-center justify-center text-xs">1</div>
+            <div class="font-bold text-white text-xs font-sans mb-1">Define Prompt</div>
+            <div class="text-zinc-500 text-[11px]">Instructions & persona</div>
+          </div>
+
+          <div class="bg-[#0E0E0E] border border-[#222222] p-4 rounded-xl text-center hover:border-[#F20000]/50 transition-all">
+            <div class="w-7 h-7 rounded-full bg-zinc-800 text-white font-bold mx-auto mb-2.5 flex items-center justify-center text-xs">2</div>
+            <div class="font-bold text-white text-xs font-sans mb-1">Bind Knowledge</div>
+            <div class="text-zinc-500 text-[11px]">Docs, URLs & SQL</div>
+          </div>
+
+          <div class="bg-[#0E0E0E] border border-[#222222] p-4 rounded-xl text-center hover:border-[#F20000]/50 transition-all">
+            <div class="w-7 h-7 rounded-full bg-zinc-800 text-white font-bold mx-auto mb-2.5 flex items-center justify-center text-xs">3</div>
+            <div class="font-bold text-white text-xs font-sans mb-1">Connect APIs</div>
+            <div class="text-zinc-500 text-[11px]">Stripe, Shopify, RPCs</div>
+          </div>
+
+          <div class="bg-[#0E0E0E] border border-[#222222] p-4 rounded-xl text-center hover:border-[#F20000]/50 transition-all">
+            <div class="w-7 h-7 rounded-full bg-zinc-800 text-white font-bold mx-auto mb-2.5 flex items-center justify-center text-xs">4</div>
+            <div class="font-bold text-white text-xs font-sans mb-1">Select Channels</div>
+            <div class="text-zinc-500 text-[11px]">WhatsApp, Voice, Email</div>
+          </div>
+
+          <div class="bg-[#0E0E0E] border border-[#222222] p-4 rounded-xl text-center hover:border-[#F20000]/50 transition-all">
+            <div class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold mx-auto mb-2.5 flex items-center justify-center text-xs">5</div>
+            <div class="font-bold text-white text-xs font-sans mb-1">Launch</div>
+            <div class="text-zinc-500 text-[11px]">Active with 99.99% SLA</div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="py-20 bg-[#0A0A0A] border-t border-[#222222]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="font-mono text-xs text-[#F20000] uppercase tracking-widest mb-2">PRICING</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            Simple Pricing
+          </h2>
+
+          <div class="mt-6 inline-flex items-center gap-2 bg-[#121212] p-1 rounded-xl border border-zinc-800 text-xs font-mono">
+            <button onclick="setBillingCycle('monthly')" id="bill-monthly" class="px-3.5 py-1.5 rounded-lg bg-[#F20000] text-white font-bold">Monthly</button>
+            <button onclick="setBillingCycle('yearly')" id="bill-yearly" class="px-3.5 py-1.5 rounded-lg text-zinc-400 hover:text-white">Yearly (-20%)</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Community -->
+          <div class="bg-[#080808] border border-[#222222] p-6 rounded-2xl flex flex-col justify-between hover:border-zinc-700 transition-all">
+            <div>
+              <div class="font-mono text-xs text-zinc-400 uppercase tracking-widest mb-1">Developer</div>
+              <h3 class="text-xl font-bold text-white mb-2">Community</h3>
+              <div class="text-3xl font-extrabold text-white mb-5 font-mono">$0 <span class="text-xs font-normal text-zinc-500">/ forever</span></div>
+              <ul class="space-y-2.5 text-xs text-zinc-400 border-t border-zinc-800 pt-4">
+                <li class="flex items-center gap-2 text-zinc-200">✓ 1 Active Agent</li>
+                <li class="flex items-center gap-2">✓ 1,000 Messages / mo</li>
+                <li class="flex items-center gap-2">✓ Web Widget & API</li>
+                <li class="flex items-center gap-2">✓ Basic Tool Calling</li>
+              </ul>
+            </div>
+            <button onclick="openModal('signupModal')" class="mt-6 w-full bg-[#1A1A1A] hover:bg-zinc-800 text-white font-bold py-2.5 rounded-xl transition-colors text-xs sm:text-sm">
+              Get Started Free
+            </button>
+          </div>
+
+          <!-- Pro -->
+          <div class="bg-[#120808] border-2 border-[#F20000] p-6 rounded-2xl flex flex-col justify-between shadow-red-glow relative">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#F20000] text-white text-[9px] font-mono font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full">
+              POPULAR
+            </div>
+            <div>
+              <div class="font-mono text-xs text-[#F20000] uppercase tracking-widest mb-1">Production</div>
+              <h3 class="text-xl font-bold text-white mb-2">Pro Scale</h3>
+              <div class="text-3xl font-extrabold text-white mb-5 font-mono">
+                <span id="price-pro-val">$49</span> <span class="text-xs font-normal text-zinc-400">/ mo</span>
+              </div>
+              <ul class="space-y-2.5 text-xs text-zinc-300 border-t border-[#F20000]/30 pt-4">
+                <li class="flex items-center gap-2 text-white font-semibold">✓ 10 Active Agents</li>
+                <li class="flex items-center gap-2 text-white font-semibold">✓ 50,000 Messages / mo</li>
+                <li class="flex items-center gap-2 text-emerald-400">✓ WhatsApp Business API</li>
+                <li class="flex items-center gap-2">✓ Twilio Voice Dispatch</li>
+                <li class="flex items-center gap-2">✓ Sub-30ms Vector Memory</li>
+              </ul>
+            </div>
+            <button onclick="openModal('signupModal')" class="mt-6 w-full bg-[#F20000] hover:bg-[#FF1A1A] text-white font-bold py-3 rounded-xl shadow-lg transition-all text-xs sm:text-sm">
+              Start Free Trial
+            </button>
+          </div>
+
+          <!-- Enterprise -->
+          <div class="bg-[#080808] border border-[#222222] p-6 rounded-2xl flex flex-col justify-between hover:border-zinc-700 transition-all">
+            <div>
+              <div class="font-mono text-xs text-purple-400 uppercase tracking-widest mb-1">Custom</div>
+              <h3 class="text-xl font-bold text-white mb-2">Enterprise</h3>
+              <div class="text-3xl font-extrabold text-white mb-5 font-mono">Custom</div>
+              <ul class="space-y-2.5 text-xs text-zinc-400 border-t border-zinc-800 pt-4">
+                <li class="flex items-center gap-2 text-zinc-200">✓ Unlimited Agents</li>
+                <li class="flex items-center gap-2 text-zinc-200">✓ Dedicated VPC</li>
+                <li class="flex items-center gap-2 text-zinc-200">✓ Custom Tooling RPCs</li>
+                <li class="flex items-center gap-2 text-zinc-200">✓ 99.99% Uptime SLA</li>
+              </ul>
+            </div>
+            <button onclick="openModal('demoModal')" class="mt-6 w-full bg-[#1A1A1A] hover:bg-zinc-800 text-white font-bold py-2.5 rounded-xl transition-colors text-xs sm:text-sm">
+              Contact Enterprise
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-20 bg-[#080808] border-t border-[#222222]">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center mb-12">
+          <div class="font-mono text-xs text-[#F20000] uppercase tracking-widest mb-2">FAQ</div>
+          <h2 class="text-3xl font-extrabold text-white tracking-tight">
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div class="space-y-3">
+          <div class="bg-[#0E0E0E] border border-[#222222] rounded-xl p-5">
+            <h3 class="text-base font-bold text-white mb-1.5">How does tool calling work?</h3>
+            <p class="text-zinc-400 text-xs sm:text-sm leading-relaxed">
+              Actionpackd compiles OpenAPI specs and RPC definitions into JSON function schemas. The execution engine runs tool calls with sub-100ms latency.
+            </p>
+          </div>
+
+          <div class="bg-[#0E0E0E] border border-[#222222] rounded-xl p-5">
+            <h3 class="text-base font-bold text-white mb-1.5">Can I connect my WhatsApp Business account?</h3>
+            <p class="text-zinc-400 text-xs sm:text-sm leading-relaxed">
+              Yes, connect Meta WhatsApp Business API in 2 minutes with automatic template management and webhook routing.
+            </p>
+          </div>
+
+          <div class="bg-[#0E0E0E] border border-[#222222] rounded-xl p-5">
+            <h3 class="text-base font-bold text-white mb-1.5">Is data encrypted and compliant?</h3>
+            <p class="text-zinc-400 text-xs sm:text-sm leading-relaxed">
+              All data is encrypted in transit (TLS 1.3) and at rest (AES-256). Dedicated VPC instances available for enterprise.
+            </p>
+          </div>
+
+          <div class="bg-[#0E0E0E] border border-[#222222] rounded-xl p-5">
+            <h3 class="text-base font-bold text-white mb-1.5">Can I self-host Actionpackd agents?</h3>
+            <p class="text-zinc-400 text-xs sm:text-sm leading-relaxed">
+              Yes, run the Actionpackd daemon in Docker, Kubernetes, or edge runtimes via our open CLI.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#0A0A0A] border-t border-[#222222] pt-12 pb-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pb-10 border-b border-[#222222]">
+          
+          <div class="md:col-span-2">
+            <a href="#" class="flex items-center gap-2 mb-3 group">
+              <img src="/logo.svg" alt="actionpackd logo" class="h-8 w-auto object-contain" />
+            </a>
+            <p class="text-zinc-500 max-w-sm text-xs leading-relaxed mb-3">
+              Autonomous AI Agents + Sub-100ms Tool Execution + Multi-Channel Messaging.
+            </p>
+
+            <div class="inline-flex items-center gap-2 bg-[#121212] border border-zinc-800 px-3 py-1 rounded-full text-xs font-mono text-zinc-400">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              Systems Operational (99.99%)
+            </div>
+          </div>
+
+          <div>
+            <div class="font-mono text-xs font-bold text-white uppercase tracking-wider mb-3">Product</div>
+            <ul class="space-y-2 text-xs text-zinc-400">
+              <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+              <li><a href="#speed-telemetry" class="hover:text-white transition-colors">F1 Speed Telemetry</a></li>
+              <li><a href="#architecture" class="hover:text-white transition-colors">Architecture</a></li>
+              <li><a href="#benchmarks" class="hover:text-white transition-colors">Benchmarks</a></li>
+              <li><a href="#pricing" class="hover:text-white transition-colors">Pricing</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="font-mono text-xs font-bold text-white uppercase tracking-wider mb-3">Channels</div>
+            <ul class="space-y-2 text-xs text-zinc-400">
+              <li><a href="#" class="hover:text-white transition-colors">WhatsApp API</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Twilio Voice</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">SendGrid Email</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">React SDK</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="font-mono text-xs font-bold text-white uppercase tracking-wider mb-3">Developers</div>
+            <ul class="space-y-2 text-xs text-zinc-400 font-mono">
+              <li><a href="#quickstart" class="hover:text-[#F20000] transition-colors">pip install actionpackd</a></li>
+              <li><a href="#" class="hover:text-[#F20000] transition-colors">OpenAPI Spec</a></li>
+              <li><a href="#" class="hover:text-[#F20000] transition-colors">GitHub Repo</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-3">
+          <div>&copy; 2026 Actionpackd Inc. All rights reserved.</div>
+          <div class="flex items-center gap-5">
+            <a href="#" class="hover:text-zinc-400">Privacy</a>
+            <a href="#" class="hover:text-zinc-400">Terms</a>
+            <a href="#" class="hover:text-zinc-400">Security</a>
+          </div>
+        </div>
+
+      </div>
+    </footer>
+
+    <!-- MODALS -->
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+      <div class="bg-[#0E0E0E] border border-[#262626] rounded-2xl max-w-md w-full p-6 relative shadow-terminal">
+        <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-1 font-mono text-sm">✕</button>
+        <div class="mb-3">
+          <img src="/logo.svg" alt="actionpackd logo" class="h-8 w-auto object-contain" />
+        </div>
+        <h3 class="text-xl font-bold text-white mb-1">Sign In</h3>
+        <p class="text-xs text-zinc-400 mb-5">Manage agents, webhooks, and channel integrations.</p>
+
+        <form onsubmit="handleFormSubmit(event, 'Launching Actionpackd Console...')" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-mono text-zinc-400 mb-1">Work Email</label>
+            <input type="email" required placeholder="developer@company.com" class="w-full bg-[#080808] border border-zinc-800 focus:border-[#F20000] text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-zinc-400 mb-1">Password</label>
+            <input type="password" required placeholder="••••••••••••" class="w-full bg-[#080808] border border-zinc-800 focus:border-[#F20000] text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm outline-none" />
+          </div>
+          <button type="submit" class="w-full bg-[#F20000] hover:bg-[#FF1A1A] text-white font-bold py-2.5 rounded-xl transition-colors text-xs sm:text-sm shadow-red-glow">
+            Sign In &rarr;
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- SIGNUP MODAL -->
+    <div id="signupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+      <div class="bg-[#0E0E0E] border border-[#262626] rounded-2xl max-w-md w-full p-6 relative shadow-terminal">
+        <button onclick="closeModal('signupModal')" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-1 font-mono text-sm">✕</button>
+        <div class="mb-3">
+          <img src="/logo.svg" alt="actionpackd logo" class="h-8 w-auto object-contain" />
+        </div>
+        <h3 class="text-xl font-bold text-white mb-1">Create Account</h3>
+        <p class="text-xs text-zinc-400 mb-5">Start building AI agents in minutes.</p>
+
+        <form onsubmit="handleFormSubmit(event, 'Account created! API Key generated.')" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-mono text-zinc-400 mb-1">Full Name</label>
+            <input type="text" required placeholder="Alex Mercer" class="w-full bg-[#080808] border border-zinc-800 focus:border-[#F20000] text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-zinc-400 mb-1">Work Email</label>
+            <input type="email" required placeholder="alex@company.com" class="w-full bg-[#080808] border border-zinc-800 focus:border-[#F20000] text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-zinc-400 mb-1">Password</label>
+            <input type="password" required placeholder="••••••••••••" class="w-full bg-[#080808] border border-zinc-800 focus:border-[#F20000] text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm outline-none" />
+          </div>
+          <button type="submit" class="w-full bg-[#F20000] hover:bg-[#FF1A1A] text-white font-bold py-2.5 rounded-xl transition-colors text-xs sm:text-sm shadow-red-glow">
+            Get Free API Key &rarr;
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- DEMO CONTACT MODAL -->
+    <div id="demoModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+      <div class="bg-[#0E0E0E] border border-[#262626] rounded-2xl max-w-md w-full p-6 relative shadow-terminal">
+        <button onclick="closeModal('demoModal')" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-1 font-mono text-sm">✕</button>
+        <div class="mb-3">
+          <img src="/logo.svg" alt="actionpackd logo" class="h-8 w-auto object-contain" />
+        </div>
+        <h3 class="text-xl font-bold text-white mb-1">Enterprise Sales</h3>
+        <p class="text-xs text-zinc-400 mb-5">Dedicated VPC infrastructure, custom RPCs, and SLAs.</p>
+
+        <form onsubmit="handleFormSubmit(event, 'Thank you! We will reach out shortly.')" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-mono text-zinc-400 mb-1">Work Email</label>
+            <input type="email" required placeholder="cto@enterprise.com" class="w-full bg-[#080808] border border-zinc-800 focus:border-[#F20000] text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-mono text-zinc-400 mb-1">Estimated Monthly Volume</label>
+            <select class="w-full bg-[#080808] border border-zinc-800 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm outline-none">
+              <option>100k - 500k messages</option>
+              <option>500k - 2M messages</option>
+              <option>2M+ enterprise volume</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full bg-[#F20000] hover:bg-[#FF1A1A] text-white font-bold py-2.5 rounded-xl transition-colors text-xs sm:text-sm shadow-red-glow">
+            Contact Sales &rarr;
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-[#121212] border border-[#F20000] text-white px-4 py-2.5 rounded-xl shadow-2xl font-mono text-xs flex items-center gap-3 translate-y-20 opacity-0 transition-all z-50">
+      <span class="w-2 h-2 rounded-full bg-[#F20000]"></span>
+      <span id="toast-message">Copied to clipboard!</span>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+      // 1. CLI TAB SWITCHER
+      const cliCommands = {
+        pip: 'pip install actionpackd && actionpackd init --channel whatsapp',
+        curl: 'curl -fsSL https://api.actionpackd.com/v1/agent/deploy -H "Authorization: Bearer AP_KEY"',
+        ts: 'npm install @actionpackd/sdk && const agent = new Agent();',
+        docker: 'docker run -p 8080:8080 -e AP_KEY=$KEY actionpackd/agent-daemon:latest'
+      };
+
+      let currentCliKey = 'pip';
+
+      function setCliTab(key) {
+        currentCliKey = key;
+        document.querySelectorAll('.cli-tab').forEach(t => {
+          t.classList.remove('text-white', 'font-bold', 'border-b-2', 'border-[#F20000]');
+          t.classList.add('hover:text-white');
+        });
+        const activeTab = document.getElementById(`tab-${key}`);
+        if (activeTab) {
+          activeTab.classList.add('text-white', 'font-bold', 'border-b-2', 'border-[#F20000]');
+        }
+        document.getElementById('cli-cmd-display').innerHTML = `<span class="text-[#F20000]">$</span> ${cliCommands[key]}`;
+      }
+
+      function copyCurrentCliCmd() {
+        copyInstallCmd(cliCommands[currentCliKey]);
+      }
+
+      function copyInstallCmd(text) {
+        navigator.clipboard.writeText(text);
+        showToast(`Copied: "${text.substring(0, 24)}..."`);
+      }
+
+      function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-message').innerText = msg;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        setTimeout(() => {
+          toast.classList.add('translate-y-20', 'opacity-0');
+        }, 3000);
+      }
+
+      // DRS OVERTAKE MODE SIMULATOR (F1 MAX VERSTAPPEN MODE)
+      function triggerDrsOvertake() {
+        const rpmBar = document.getElementById('f1-rpm-bar');
+        const rpmText = document.getElementById('f1-rpm-text');
+        const statusMsg = document.getElementById('drs-status-msg');
+        const deltaTime = document.getElementById('f1-delta-time');
+
+        statusMsg.innerText = "⚡ DRS OPEN! Shift 7 -> Shift 8 • Overclocking Execution Engine...";
+        rpmBar.style.width = '100%';
+        rpmText.innerText = "13,800 RPM (DRS ACTIVE)";
+        rpmText.style.color = "#00E5FF";
+
+        setTimeout(() => {
+          deltaTime.innerText = "-1.412s (NEW LAP RECORD)";
+          statusMsg.innerText = "Simply Lovely! Latency reduced to 24ms. Sub-100ms execution locked!";
+          showToast("⚡ DRS Overtake Boost Active: 24ms tool latency achieved!");
+        }, 800);
+
+        setTimeout(() => {
+          rpmBar.style.width = '88%';
+          rpmText.innerText = "12,400 RPM";
+          rpmText.style.color = "#FFB800";
+        }, 4000);
+      }
+
+      // 2. TERMINAL SIMULATOR
+      function switchTerminalChannel(chan) {
+        document.querySelectorAll('.term-chan-btn').forEach(b => {
+          b.classList.remove('bg-[#F20000]', 'text-white', 'font-bold');
+          b.classList.add('text-zinc-400');
+        });
+        const activeBtn = document.getElementById(`term-tab-${chan}`);
+        if (activeBtn) {
+          activeBtn.classList.add('bg-[#F20000]', 'text-white', 'font-bold');
+          activeBtn.classList.remove('text-zinc-400');
+        }
+
+        const stream = document.getElementById('terminal-stream-content');
+        if (chan === 'whatsapp') {
+          stream.innerHTML = `
+            <div class="text-zinc-500">[10:35:01.012] <span class="text-emerald-400">INIT</span> Actionpackd Engine loaded (Gemini 2.5 Flash + Tool Calling)</div>
+            <div class="text-zinc-500">[10:35:02.180] <span class="text-yellow-400">INCOMING</span> WhatsApp message from <span class="text-white">+1 (555) 019-2831</span></div>
+            <div class="p-3 bg-[#121212] border-l-2 border-[#F20000] rounded my-2 text-zinc-200">
+              <span class="text-[#F20000] font-bold">USER MSG:</span> "Do you have the Actionpackd Red Headband Hoodie in Medium in stock?"
+            </div>
+            <div class="text-zinc-500">[10:35:02.210] <span class="text-purple-400">TOOL_CALL</span> shopify.search_inventory(sku="AP-HD-RED-M")</div>
+            <div class="text-zinc-500">[10:35:02.265] <span class="text-emerald-400">EXEC_OK</span> Stock: 14 units · Price: $68.00 · Latency: 55ms</div>
+            <div class="p-3 bg-[#151f15] border-l-2 border-emerald-500 rounded my-2 text-emerald-200">
+              <span class="text-emerald-400 font-bold">AGENT RESPONSE:</span> "Yes! We have 14 units of Medium in stock for $68. Tap here to pay: https://pay.actionpackd.com/chk_9842"
+            </div>
+          `;
+        } else if (chan === 'voice') {
+          stream.innerHTML = `
+            <div class="text-zinc-500">[10:35:04.102] <span class="text-blue-400">VOICE_STREAM</span> Twilio Stream connected</div>
+            <div class="text-zinc-500">[10:35:04.150] <span class="text-yellow-400">AUDIO_CHUNK</span> Inbound user audio parsed (Latency: 28ms)</div>
+            <div class="p-3 bg-[#121212] border-l-2 border-blue-500 rounded my-2 text-zinc-200">
+              <span class="text-blue-400 font-bold">CALLER AUDIO:</span> "I need to reschedule my appointment to Friday morning."
+            </div>
+            <div class="text-zinc-500">[10:35:04.210] <span class="text-purple-400">TOOL_CALL</span> calendar.find_slots(date="2026-07-31")</div>
+            <div class="text-zinc-500">[10:35:04.280] <span class="text-emerald-400">EXEC_OK</span> Available slot: 9:30 AM</div>
+            <div class="p-3 bg-[#151f15] border-l-2 border-emerald-500 rounded my-2 text-emerald-200">
+              <span class="text-emerald-400 font-bold">TTS DISPATCH:</span> "I've moved your appointment to Friday at 9:30 AM!"
+            </div>
+          `;
+        } else if (chan === 'rag') {
+          stream.innerHTML = `
+            <div class="text-zinc-500">[10:35:08.001] <span class="text-purple-400">VECTOR_SEARCH</span> Query embedding generated (768-dim)</div>
+            <div class="text-zinc-500">[10:35:08.035] <span class="text-purple-400">HYBRID_RAG</span> Searched 14,000 PDF docs</div>
+            <div class="p-3 bg-[#121212] border-l-2 border-purple-500 rounded my-2 text-zinc-200">
+              <span class="text-purple-400 font-bold">MATCHED DOCS:</span> "Section 4.2 - Cancellation Policy: Full refund if cancelled 24h prior."
+            </div>
+            <div class="text-zinc-500">[10:35:08.090] <span class="text-emerald-400">SYNTHESIS</span> Response generated with source attribution (42ms)</div>
+          `;
+        }
+      }
+
+      function triggerTerminalSimulation() {
+        const typingLabel = document.getElementById('terminal-typing-text');
+        typingLabel.innerText = "Simulating traffic event...";
+        setTimeout(() => {
+          showToast("Live simulation triggered on Actionpackd Daemon ap-us-east-4920");
+          typingLabel.innerText = "ready for events...";
+        }, 1200);
+      }
+
+      // 3. ARCHITECTURE PIPELINE SELECTOR
+      const archSchemas = {
+        input: {
+          title: 'Payload Schema: Multi-Channel Ingress',
+          code: `{\n  "event_id": "evt_98412a80f",\n  "timestamp": "2026-07-25T10:35:02.180Z",\n  "channel": "whatsapp_business_api",\n  "sender": {\n    "phone": "+15550192831",\n    "name": "Alex Mercer"\n  },\n  "message": {\n    "body": "Do you have the Actionpackd Red Headband Hoodie in Medium?"\n  }\n}`
+        },
+        rag: {
+          title: 'Payload Schema: Vector Memory Lookup',
+          code: `{\n  "memory_lookup": {\n    "session_id": "sess_88921",\n    "vector_score": 0.941,\n    "recalled_context": [\n      "User previously purchased Size M",\n      "Prefers Apple Pay"\n    ],\n    "lookup_time_ms": 18\n  }\n}`
+        },
+        tool: {
+          title: 'Payload Schema: Tool Execution Matrix',
+          code: `{\n  "tool_call": {\n    "name": "shopify.check_inventory",\n    "arguments": {\n      "sku": "AP-HD-RED-M"\n    },\n    "result": {\n      "in_stock": true,\n      "quantity": 14,\n      "price_cents": 6800\n    }\n  }\n}`
+        },
+        dispatch: {
+          title: 'Payload Schema: Egress Delivery',
+          code: `{\n  "dispatch": {\n    "status": "delivered",\n    "ttft_ms": 198,\n    "channel": "whatsapp_cloud_api"\n  }\n}`
+        }
+      };
+
+      function selectArchNode(key) {
+        document.querySelectorAll('.arch-node-item').forEach(el => {
+          el.classList.remove('border-[#F20000]', 'bg-[#121212]');
+          el.classList.add('border-[#222222]', 'bg-[#0E0E0E]');
+        });
+
+        const activeEl = document.getElementById(`arch-node-${key}`);
+        if (activeEl) {
+          activeEl.classList.add('border-[#F20000]', 'bg-[#121212]');
+          activeEl.classList.remove('border-[#222222]', 'bg-[#0E0E0E]');
+        }
+
+        document.getElementById('arch-node-title').innerText = archSchemas[key].title;
+        document.getElementById('arch-code-preview').innerText = archSchemas[key].code;
+      }
+
+      // 4. INTERACTIVE PLAYGROUND
+      const playgroundPrompts = {
+        ecommerce: [
+          { sender: 'user', text: 'Hi! Is the Red Headband Hoodie in stock in size Medium?' },
+          { sender: 'agent', text: 'Yes! 14 units of Medium are in stock for $68.00. Would you like an Apple Pay checkout link?' }
+        ],
+        realestate: [
+          { sender: 'user', text: 'Hi, is the 3-bedroom apartment on Sunset Blvd available for a tour tomorrow at 2 PM?' },
+          { sender: 'agent', text: 'Yes! Your private tour is set for tomorrow at 2:00 PM with Sarah. Calendar invite sent!' }
+        ],
+        healthcare: [
+          { sender: 'user', text: 'Can I reschedule my appointment to Friday morning?' },
+          { sender: 'agent', text: 'Done! Slot open on Friday at 9:30 AM. Appointment updated and confirmation SMS sent!' }
+        ],
+        education: [
+          { sender: 'user', text: 'What is the deadline for the Data Science Bootcamp?' },
+          { sender: 'agent', text: 'Early deadline is August 15th. Course fee is $2,400 with monthly payment plans. Want the syllabus emailed?' }
+        ]
+      };
+
+      let currentIndustry = 'ecommerce';
+
+      function setPlaygroundIndustry(ind) {
+        currentIndustry = ind;
+        document.querySelectorAll('.ind-btn').forEach(b => {
+          b.classList.remove('bg-[#F20000]', 'text-white');
+          b.classList.add('bg-[#121212]', 'text-zinc-400');
+        });
+
+        const activeBtn = document.getElementById(`ind-tab-${ind}`);
+        if (activeBtn) {
+          activeBtn.classList.add('bg-[#F20000]', 'text-white');
+          activeBtn.classList.remove('bg-[#121212]', 'text-zinc-400');
+        }
+
+        const nameMap = {
+          ecommerce: 'Actionpackd E-Commerce Agent',
+          realestate: 'Actionpackd Real Estate Agent',
+          healthcare: 'Actionpackd Clinic Scheduler',
+          education: 'Actionpackd Admissions Bot'
+        };
+        document.getElementById('demo-agent-name').innerText = nameMap[ind];
+        resetDemoChat();
+      }
+
+      function resetDemoChat() {
+        const body = document.getElementById('demo-chat-body');
+        body.innerHTML = '';
+        const msgs = playgroundPrompts[currentIndustry];
+        msgs.forEach(m => {
+          appendMessageToBody(m.sender, m.text);
+        });
+      }
+
+      function appendMessageToBody(sender, text) {
+        const body = document.getElementById('demo-chat-body');
+        const div = document.createElement('div');
+        if (sender === 'user') {
+          div.className = 'flex items-start gap-2.5';
+          div.innerHTML = `
+            <div class="w-7 h-7 rounded-full bg-zinc-800 text-zinc-300 font-bold text-[10px] flex items-center justify-center shrink-0">YOU</div>
+            <div class="bg-[#121212] border border-zinc-800 p-3 rounded-2xl rounded-tl-none max-w-md text-zinc-200">
+              <p>${escapeHtml(text)}</p>
+            </div>
+          `;
+        } else {
+          div.className = 'flex items-start gap-2.5 flex-row-reverse';
+          div.innerHTML = `
+            <div class="w-7 h-7 rounded-full bg-[#F20000] text-white font-black text-[10px] flex items-center justify-center shrink-0">AI</div>
+            <div class="bg-[#1B0A0A] border border-[#F20000]/40 p-3 rounded-2xl rounded-tr-none max-w-md text-zinc-100">
+              <p>${escapeHtml(text)}</p>
+            </div>
+          `;
+        }
+        body.appendChild(div);
+        body.scrollTop = body.scrollHeight;
+      }
+
+      function sendUserDemoMessage() {
+        const input = document.getElementById('demo-user-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        appendMessageToBody('user', text);
+        input.value = '';
+
+        setTimeout(() => {
+          appendMessageToBody('agent', `Processed via Actionpackd Engine! Real-time tool execution completed in 82ms.`);
+        }, 800);
+      }
+
+      function escapeHtml(str) {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      }
+
+      document.getElementById('demo-user-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendUserDemoMessage();
+      });
+
+      // 5. PRICING TOGGLE
+      function setBillingCycle(cycle) {
+        const btnM = document.getElementById('bill-monthly');
+        const btnY = document.getElementById('bill-yearly');
+        const proVal = document.getElementById('price-pro-val');
+
+        if (cycle === 'yearly') {
+          btnY.classList.add('bg-[#F20000]', 'text-white', 'font-bold');
+          btnY.classList.remove('text-zinc-400');
+          btnM.classList.remove('bg-[#F20000]', 'text-white', 'font-bold');
+          btnM.classList.add('text-zinc-400');
+          proVal.innerText = '$39';
+        } else {
+          btnM.classList.add('bg-[#F20000]', 'text-white', 'font-bold');
+          btnM.classList.remove('text-zinc-400');
+          btnY.classList.remove('bg-[#F20000]', 'text-white', 'font-bold');
+          btnY.classList.add('text-zinc-400');
+          proVal.innerText = '$49';
+        }
+      }
+
+      // 6. MODAL CONTROL
+      function openModal(id) {
+        const m = document.getElementById(id);
+        if (m) {
+          m.classList.remove('hidden');
+          m.classList.add('flex');
+        }
+      }
+
+      function closeModal(id) {
+        const m = document.getElementById(id);
+        if (m) {
+          m.classList.add('hidden');
+          m.classList.remove('flex');
+        }
+      }
+
+      function handleFormSubmit(e, msg) {
+        e.preventDefault();
+        showToast(msg);
+        document.querySelectorAll('.fixed.inset-0').forEach(m => {
+          m.classList.add('hidden');
+          m.classList.remove('flex');
+        });
+      }
+
+      resetDemoChat();
+    </script>
+  </body>
+</html>

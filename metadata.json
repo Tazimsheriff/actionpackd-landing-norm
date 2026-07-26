@@ -1,0 +1,6 @@
+{
+  "name": "Actionpackd",
+  "description": "No-code platform for building and deploying AI agents that automate WhatsApp campaigns, chat, voice, and email.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

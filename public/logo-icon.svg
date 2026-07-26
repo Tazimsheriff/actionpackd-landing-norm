@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141414" />
+      <stop offset="100%" stop-color="#0A0A0A" />
+    </linearGradient>
+    <linearGradient id="hb-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1A1A" />
+      <stop offset="100%" stop-color="#C00000" />
+    </linearGradient>
+  </defs>
+
+  <rect width="100" height="100" rx="22" fill="url(#bg-grad)"/>
+  <rect x="1.5" y="1.5" width="97" height="97" rx="20.5" stroke="#F20000" stroke-opacity="0.4" stroke-width="2"/>
+  
+  <g transform="translate(-2, 2)">
+    <!-- Red headband ribbon tails -->
+    <path d="M 24 35 C 12 30 8 26 3 28 C 1 29 6 35 15 37 C 21 39 23 40 25 40 Z" fill="url(#hb-grad)"/>
+    <path d="M 24 37 C 11 41 7 45 2 47 C 1 49 8 48 17 44 C 21 41 23 41 25 40 Z" fill="#990000"/>
+
+    <!-- Back Leg -->
+    <path d="M 42 66 L 30 77 L 24 73 L 36 62 Z" fill="#1A1A1A"/>
+    <path d="M 23 72 L 18 77 C 16 79 20 83 24 81 L 29 76 Z" fill="#F20000"/>
+    <path d="M 19 79 L 26 81" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Front Leg -->
+    <path d="M 54 66 L 68 77 L 76 71 L 62 60 Z" fill="#222222"/>
+    <path d="M 68 75 L 78 83 C 82 85 86 81 82 76 L 75 70 Z" fill="#F20000"/>
+    <path d="M 76 82 L 83 78" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Hooded Sweatshirt -->
+    <path d="M 35 44 C 35 44 48 40 58 44 C 64 46 68 54 64 66 C 58 70 44 70 38 66 C 33 56 35 44 35 44 Z" fill="#161616" stroke="#2D2D2D" stroke-width="1.5"/>
+    <path d="M 44 46 C 48 50 52 50 56 46" stroke="#383838" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Left Arm -->
+    <path d="M 37 48 L 27 56 L 31 60 L 39 52 Z" fill="#1A1A1A"/>
+    <circle cx="26" cy="58" r="3.5" fill="#FFCBB3"/>
+
+    <!-- Right Arm Thumbs Up -->
+    <path d="M 57 48 L 71 42 L 75 47 L 61 53 Z" fill="#202020"/>
+    <path d="M 71 40 C 71 35 74 33 76 35 C 77 36 76 40 76 42 L 79 42 C 81 42 82 44 80 46 L 77 47 C 79 48 79 50 77 51 L 72 49 Z" fill="#FFCBB3"/>
+
+    <!-- Head & Skin -->
+    <circle cx="51" cy="32" r="13.5" fill="#FFCBB3"/>
+
+    <!-- Hair -->
+    <path d="M 35 30 C 33 20 41 14 49 14 C 57 12 67 16 69 26 C 67 20 61 18 53 18 C 45 18 37 22 35 30 Z" fill="#0F0F0F"/>
+    <path d="M 39 20 L 35 12 L 45 16 L 51 8 L 57 16 L 67 10 L 65 20 Z" fill="#1A1A1A"/>
+
+    <!-- Red Headband -->
+    <path d="M 36 26 C 44 24 57 24 66 28 L 65 33 C 57 29 44 29 37 31 Z" fill="url(#hb-grad)"/>
+
+    <!-- Face -->
+    <ellipse cx="57" cy="32" rx="2.5" ry="3.5" fill="#0D0D0D"/>
+    <ellipse cx="58" cy="31" rx="1" ry="1" fill="#FFFFFF"/>
+    <ellipse cx="46" cy="33" rx="2" ry="3" fill="#0D0D0D"/>
+    <path d="M 49 38 C 52 41 56 40 58 37" stroke="#0D0D0D" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>
